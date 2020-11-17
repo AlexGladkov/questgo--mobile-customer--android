@@ -5,11 +5,11 @@ import retrofit2.http.*
 
 interface QuestApi {
 
-    @GET("./getQuestList")
-    @Headers("Content-Type: application/json")
+    @GET("./questList")
+    @Headers("Content-Type: application/json", "apiKey: hREenbWAcsYl4tJKN47c")
     fun getQuestList(): Single<QuestListResponse>
 
     @GET("/getQuest/{questId}")
-    @Headers("Content-Type: application/json")
+    @Headers("Content-Type: application/json", "apiKey: hREenbWAcsYl4tJKN47c")
     fun getQuest(@Path("questId") questId: String): Single<String>
 }

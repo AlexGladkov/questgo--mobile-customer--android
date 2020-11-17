@@ -13,6 +13,13 @@ class VisualComponentsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val listItems: MutableList<ListItem> = ArrayList()
 
+    fun setItems(newItems: List<ListItem>) {
+        listItems.clear()
+        listItems.addAll(newItems)
+
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {

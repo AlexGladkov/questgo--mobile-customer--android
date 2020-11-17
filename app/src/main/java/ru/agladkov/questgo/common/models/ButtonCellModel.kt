@@ -1,6 +1,9 @@
 package ru.agladkov.questgo.common.models
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
-data class ButtonCellModel(val title: String): ListItem {
+@Parcelize
+data class ButtonCellModel(val title: String): ListItem, Parcelable {
     override fun uniqueViewTypeId(): Int = 0
 }

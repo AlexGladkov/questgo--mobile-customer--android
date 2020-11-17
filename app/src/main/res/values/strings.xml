@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">QuestGo</string>
+    <string name="quest_list_title">Список квестов</string>
 </resources>

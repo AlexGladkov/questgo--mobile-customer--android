@@ -7,7 +7,7 @@ data class QuestListResponse(val items: List<QuestListItem>)
 
 data class QuestListItem(
     @SerializedName("questId")
-    val questId: String,
+    val questId: Int,
 
     @SerializedName("questName")
     val name: String,

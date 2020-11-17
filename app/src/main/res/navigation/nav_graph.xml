@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    app:startDestination="@id/questListFragment">
+
+    <fragment
+        android:id="@+id/questListFragment"
+        android:name="ru.agladkov.questgo.screens.questList.QuestListFragment"
+        android:label="QuestListFragment" >
+        <action
+            android:id="@+id/action_questListFragment_to_questInfoFragment"
+            app:destination="@id/questInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/questInfoFragment"
+        android:name="ru.agladkov.questgo.screens.questInfo.QuestInfoFragment"
+        android:label="QuestInfoFragment" />
+</navigation>
