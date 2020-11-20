@@ -12,6 +12,7 @@ import ru.agladkov.questgo.di.modules.ScreenBindingModule
 import ru.agladkov.questgo.di.modules.ViewModelModule
 import ru.agladkov.questgo.screens.questList.QuestListModule
 import ru.agladkov.questgo.screens.questList.QuestListViewModel
+import ru.agladkov.questgo.screens.questPage.QuestPageModule
 
 @Component(
     modules = [
@@ -20,7 +21,8 @@ import ru.agladkov.questgo.screens.questList.QuestListViewModel
         ScreenBindingModule::class,
         ViewModelModule::class,
         RemoteModule::class,
-        QuestListModule::class
+        QuestListModule::class,
+        QuestPageModule::class
     ]
 )
 @AppScope

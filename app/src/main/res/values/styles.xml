@@ -10,6 +10,8 @@
 
         <item name="primaryTextColor">@color/light_primary_text_color</item>
         <item name="secondaryTextColor">@color/light_secondary_text_color</item>
+
+        <item name="primaryTintColor">@color/light_tint_primary</item>
     </style>
 
     <style name="ActivityTheme.Primary.Base.Dark">
@@ -20,6 +22,8 @@
 
         <item name="primaryTextColor">@color/dark_primary_text_color</item>
         <item name="secondaryTextColor">@color/dark_secondary_text_color</item>
+
+        <item name="primaryTintColor">@color/dark_tint_primary</item>
     </style>
 
 </resources>

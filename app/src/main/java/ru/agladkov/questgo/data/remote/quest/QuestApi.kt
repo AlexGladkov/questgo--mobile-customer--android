@@ -9,7 +9,7 @@ interface QuestApi {
     @Headers("Content-Type: application/json", "apiKey: hREenbWAcsYl4tJKN47c")
     fun getQuestList(): Single<QuestListResponse>
 
-    @GET("/getQuest/{questId}")
+    @GET("/questInfo")
     @Headers("Content-Type: application/json", "apiKey: hREenbWAcsYl4tJKN47c")
-    fun getQuest(@Path("questId") questId: String): Single<String>
+    fun getQuest(@Query("questId") questId: Int): Single<QuestResponse>
 }

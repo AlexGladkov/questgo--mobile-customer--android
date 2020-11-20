@@ -33,6 +33,6 @@
         android:layout_gravity="center"
         app:cpv_animAutostart="true"
         app:cpv_indeterminate="true"
-        app:cpv_color="@color/dark_tint_color" />
+        app:cpv_color="?attr/primaryTintColor" />
 
 </FrameLayout>

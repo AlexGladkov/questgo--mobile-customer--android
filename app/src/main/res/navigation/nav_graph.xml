@@ -14,5 +14,17 @@
     <fragment
         android:id="@+id/questInfoFragment"
         android:name="ru.agladkov.questgo.screens.questInfo.QuestInfoFragment"
-        android:label="QuestInfoFragment" />
+        android:label="QuestInfoFragment" >
+        <action
+            android:id="@+id/action_questInfoFragment_to_questPageFragment"
+            app:destination="@id/questPageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/questPageFragment"
+        android:name="ru.agladkov.questgo.screens.questPage.QuestPageFragment"
+        android:label="QuestPageFragment" >
+        <action
+            android:id="@+id/action_questPageFragment_self"
+            app:destination="@id/questPageFragment" />
+    </fragment>
 </navigation>

@@ -8,6 +8,9 @@
     <color name="light_background_color">#FFFFFF</color>
     <color name="light_background_secondary_color">#F3F4F5</color>
     <color name="light_background_highlight_color">#E1EEFF</color>
+
+    <color name="light_tint_primary">#AD57D9</color>
+
     <color name="light_background_detail_highlight_color">#E1EEFF</color>
     <color name="light_active_support_color">#FFFFFF</color>
     <color name="light_ripple_color">#E6E9EC</color>
@@ -51,6 +54,8 @@
     <color name="dark_background_secondary_color">#191E23</color>
     <color name="dark_background_highlight_color">#354459</color>
     <color name="dark_background_detail_highlight_color">#354459</color>
+
+    <color name="dark_tint_primary">#D580FF</color>
 
     <color name="dark_active_support_color">#DAE0E6</color>
     <color name="dark_ripple_color">#14181C</color>

@@ -1,9 +1,7 @@
 package ru.agladkov.questgo.common
 
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import ru.agladkov.questgo.R
 import ru.agladkov.questgo.common.models.*
@@ -12,6 +10,8 @@ import ru.agladkov.questgo.common.viewholders.*
 class VisualComponentsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val listItems: MutableList<ListItem> = ArrayList()
+
+    var buttonCellDelegate: ButtonCellDelegate? = null
 
     fun setItems(newItems: List<ListItem>) {
         listItems.clear()
@@ -36,7 +36,10 @@ class VisualComponentsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ButtonViewHolder -> holder.bind(listItems[position] as? ButtonCellModel)
+            is ButtonViewHolder -> {
+                holder.bind(listItems[position] as? ButtonCellModel)
+                holder.buttonCellDelegate = buttonCellDelegate
+            }
             is HeaderViewHolder -> holder.bind(listItems[position] as? HeaderCellModel)
             is ImageViewHolder -> holder.bind(listItems[position] as? ImageCellModel)
             is TextViewHolder -> holder.bind(listItems[position] as? TextCellModel)
