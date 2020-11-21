@@ -6,10 +6,18 @@ import androidx.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import ru.agladkov.questgo.common.models.ButtonCellModel
 import ru.agladkov.questgo.common.models.ListItem
 import ru.agladkov.questgo.common.models.mapToUI
 import ru.agladkov.questgo.data.remote.quest.QuestApi
+import ru.agladkov.questgo.helpers.SingleLiveAction
+import java.util.*
 import javax.inject.Inject
+
+sealed class QuestPageError {
+    object RequestException : QuestPageError()
+    object WrongAnswerException : QuestPageError()
+}
 
 class QuestPageViewModel @Inject constructor(
     private val questApi: QuestApi
@@ -18,14 +26,17 @@ class QuestPageViewModel @Inject constructor(
     private var questPageId: Int? = null
     private var questId: Int? = null
     private val compositeDisposable = CompositeDisposable()
+    private var correctAnswer = ""
+    private var infoBlock: MutableList<ListItem> = emptyList<ListItem>().toMutableList()
 
     private val _items: MutableLiveData<List<ListItem>> = MutableLiveData(emptyList())
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(true)
-    private val _errorMessage: MutableLiveData<String> = MutableLiveData("")
+    private val _errorMessage: MutableLiveData<QuestPageError?> = MutableLiveData(null)
 
     val items: LiveData<List<ListItem>> = _items
     val isLoading: LiveData<Boolean> = _isLoading
-    val errorMessage: LiveData<String> = _errorMessage
+    val errorMessage: LiveData<QuestPageError?> = _errorMessage
+    val successAction = MutableLiveData<Boolean>(false)
 
     override fun onCleared() {
         compositeDisposable.dispose()
@@ -47,14 +58,32 @@ class QuestPageViewModel @Inject constructor(
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ response ->
                         _isLoading.postValue(false)
-                        _items.postValue(response.pages[questPageId!! - 1].components.map { it.mapToUI() })
+
+                        try {
+                            val currentItem = response.pages[questPageId!! - 1]
+                            _items.postValue(currentItem.components.map { it.mapToUI() })
+                            infoBlock = currentItem.info.map { it.mapToUI() }.toMutableList()
+                            correctAnswer = currentItem.code
+                        } catch (e: Exception) {
+                            _errorMessage.postValue(QuestPageError.RequestException)
+                        }
                     }, {
                         _isLoading.postValue(false)
-                        _errorMessage.postValue(it.localizedMessage)
+                        _errorMessage.postValue(QuestPageError.RequestException)
                     })
             }
         } else {
-            _errorMessage.postValue("Params didn't valid")
+            _errorMessage.postValue(QuestPageError.RequestException)
+        }
+    }
+
+    fun checkAnswer(text: String) {
+        if (text.toUpperCase() == correctAnswer.toUpperCase()) {
+            successAction.postValue(true)
+            infoBlock.add(ButtonCellModel("Продолжить"))
+            _items.postValue(infoBlock)
+        } else {
+            _errorMessage.postValue(QuestPageError.WrongAnswerException)
         }
     }
 }

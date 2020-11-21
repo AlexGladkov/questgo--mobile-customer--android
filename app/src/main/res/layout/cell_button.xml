@@ -11,8 +11,9 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/actionButtonView"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:textAllCaps="false"
+        android:textColor="@android:color/white"
         android:background="?attr/primaryTintColor" />
 
 </FrameLayout>
