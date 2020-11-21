@@ -6,13 +6,12 @@ import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import ru.agladkov.QuestApp
-import ru.agladkov.questgo.di.modules.ActivityBindingModule
-import ru.agladkov.questgo.di.modules.RemoteModule
-import ru.agladkov.questgo.di.modules.ScreenBindingModule
-import ru.agladkov.questgo.di.modules.ViewModelModule
+import ru.agladkov.questgo.di.modules.*
+import ru.agladkov.questgo.screens.questInfo.QuestInfoModule
 import ru.agladkov.questgo.screens.questList.QuestListModule
 import ru.agladkov.questgo.screens.questList.QuestListViewModel
 import ru.agladkov.questgo.screens.questPage.QuestPageModule
+import ru.agladkov.questgo.screens.thankYouPage.ThankYouPageModule
 
 @Component(
     modules = [
@@ -22,7 +21,11 @@ import ru.agladkov.questgo.screens.questPage.QuestPageModule
         ViewModelModule::class,
         RemoteModule::class,
         QuestListModule::class,
-        QuestPageModule::class
+        QuestPageModule::class,
+        QuestInfoModule::class,
+        ThankYouPageModule::class,
+        RepositoryModule::class,
+        AppModule::class
     ]
 )
 @AppScope

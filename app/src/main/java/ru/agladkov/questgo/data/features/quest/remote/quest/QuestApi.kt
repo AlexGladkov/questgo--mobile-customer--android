@@ -1,4 +1,4 @@
-package ru.agladkov.questgo.data.remote.quest
+package ru.agladkov.questgo.data.features.quest.remote.quest
 
 import io.reactivex.Single
 import retrofit2.http.*

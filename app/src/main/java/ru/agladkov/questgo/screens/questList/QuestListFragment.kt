@@ -16,6 +16,11 @@ import ru.agladkov.questgo.screens.questInfo.QuestInfoFragment
 import ru.agladkov.questgo.screens.questList.adapter.QuestCellModel
 import ru.agladkov.questgo.screens.questList.adapter.QuestListAdapter
 import ru.agladkov.questgo.screens.questList.adapter.QuestListAdapterClicks
+import ru.agladkov.questgo.screens.questList.models.QuestListAction
+import ru.agladkov.questgo.screens.questList.models.QuestListEvent
+import ru.agladkov.questgo.screens.questList.models.QuestListViewState
+import ru.agladkov.questgo.screens.questPage.QuestPageFragment.Companion.PAGE_ID
+import ru.agladkov.questgo.screens.questPage.QuestPageFragment.Companion.QUEST_ID
 import javax.inject.Inject
 
 class QuestListFragment : Fragment(R.layout.fragment_quest_list) {
@@ -41,20 +46,51 @@ class QuestListFragment : Fragment(R.layout.fragment_quest_list) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = injectViewModel(factory = viewModelFactory)
 
-        viewModel.isLoading.observe(viewLifecycleOwner, Observer {
-            loaderView.visibility = if (it) View.VISIBLE else View.GONE
-            itemsView.visibility = if (it) View.GONE else View.VISIBLE
-        })
-        viewModel.items.observe(viewLifecycleOwner, Observer { response ->
-            response?.let {
-                questListAdapter.setItems(newItems = it)
-            }
-        })
-
         itemsView.adapter = questListAdapter
         itemsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-        viewModel.fetchQuestList()
+        viewModel.viewStates().observe(viewLifecycleOwner, Observer { bindViewState(it) })
+        viewModel.viewEffects().observe(viewLifecycleOwner, Observer { bindViewAction(it) })
+        viewModel.obtainEvent(QuestListEvent.FetchInitial)
+    }
+
+    private fun bindViewState(viewState: QuestListViewState) {
+        when (viewState) {
+            is QuestListViewState.Loading -> {
+                itemsView.visibility = View.GONE
+                loaderView.visibility = View.VISIBLE
+            }
+
+            is QuestListViewState.Success -> {
+                questListAdapter.setItems(viewState.items)
+                itemsView.visibility = View.VISIBLE
+                loaderView.visibility = View.GONE
+            }
+
+            is QuestListViewState.Error -> {
+                // fallback to error
+            }
+        }
+    }
+
+    private fun bindViewAction(viewAction: QuestListAction) {
+        when (viewAction) {
+            is QuestListAction.OpenQuestInfo -> routeToQuest(viewAction.questCellModel)
+            is QuestListAction.OpenQuestPage -> routeToQuestPage(
+                viewAction.questId,
+                viewAction.questPage
+            )
+        }
+    }
+
+    private fun routeToQuestPage(questId: Int, questPage: Int) {
+        findNavController().navigate(
+            R.id.action_questListFragment_to_questPageFragment,
+            bundleOf(
+                QUEST_ID to questId,
+                PAGE_ID to questPage
+            )
+        )
     }
 
     private fun routeToQuest(model: QuestCellModel) {

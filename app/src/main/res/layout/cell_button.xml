@@ -4,9 +4,7 @@
     android:layout_height="wrap_content"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:paddingTop="24dp">
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/actionButtonView"

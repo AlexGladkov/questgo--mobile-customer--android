@@ -5,5 +5,5 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class VideoCellModel(val value: String): ListItem, Parcelable {
-    override fun uniqueViewTypeId(): Int = 5
+    override fun uniqueViewTypeId(): Int = 4
 }

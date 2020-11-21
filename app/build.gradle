@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 30
@@ -45,6 +46,17 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    implementation 'com.github.Toxa2033:ScaleAndSwipeDismissImageView:v0.7'
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:26.1.0')
+    implementation 'com.google.firebase:firebase-analytics'
+
+    // Room
+    def room_version = "2.2.5"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
     // Internet
     def okHttp_version = '4.8.0'
     def retrofit_version = '2.9.0'
@@ -54,6 +66,7 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:$okHttp_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttp_version"
 
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
 
     // Glide

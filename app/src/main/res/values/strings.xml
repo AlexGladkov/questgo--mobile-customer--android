@@ -6,4 +6,7 @@
     <string name="wrong_answer_text">Ответ не подход. Попробуйте еще раз или поищите опечатку. Также, помните, что буквы е и ё - это разные буквы.</string>
     <string name="action_ok">Хорошо</string>
     <string name="action_close">Закрыть</string>
+    <string name="action_finish_quest">Завершить квест</string>
+    <string name="thank_you_page_share_text">Классные квесты от QuestGo! Привычные маршруты и городские пейзажи заиграли новыми красками. Скачивайте приложение, рекомендую!</string>
+    <string name="error_loading_data">Ошибка при загрузке данных</string>
 </resources>

@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import ru.agladkov.questgo.common.models.ListItem
 import ru.agladkov.questgo.common.models.mapToUI
-import ru.agladkov.questgo.data.remote.quest.QuestListItem
+import ru.agladkov.questgo.data.features.quest.remote.quest.QuestListItem
 
 @Parcelize
 data class QuestCellModel(

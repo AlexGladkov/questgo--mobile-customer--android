@@ -1,7 +1,7 @@
-package ru.agladkov.questgo.data.remote.quest
+package ru.agladkov.questgo.data.features.quest.remote.quest
 
 import com.google.gson.annotations.SerializedName
-import ru.agladkov.questgo.data.remote.common.RemoteListItem
+import ru.agladkov.questgo.data.features.quest.remote.common.RemoteListItem
 
 data class QuestListResponse(val items: List<QuestListItem>)
 

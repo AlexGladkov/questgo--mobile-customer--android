@@ -1,6 +1,6 @@
-package ru.agladkov.questgo.data.remote.quest
+package ru.agladkov.questgo.data.features.quest.remote.quest
 
-import ru.agladkov.questgo.data.remote.common.RemoteListItem
+import ru.agladkov.questgo.data.features.quest.remote.common.RemoteListItem
 
 data class QuestResponse(
     val questId: Int,

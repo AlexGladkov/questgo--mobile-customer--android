@@ -1,17 +1,23 @@
 package ru.agladkov.questgo.screens.questPage
 
+import android.widget.Button
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import ru.agladkov.questgo.R
+import ru.agladkov.questgo.base.BaseViewModel
 import ru.agladkov.questgo.common.models.ButtonCellModel
 import ru.agladkov.questgo.common.models.ListItem
 import ru.agladkov.questgo.common.models.mapToUI
-import ru.agladkov.questgo.data.remote.quest.QuestApi
-import ru.agladkov.questgo.helpers.SingleLiveAction
-import java.util.*
+import ru.agladkov.questgo.data.features.quest.remote.quest.QuestApi
+import ru.agladkov.questgo.screens.questPage.models.QuestPageAction
+import ru.agladkov.questgo.screens.questPage.models.QuestPageEvent
+import ru.agladkov.questgo.screens.questPage.models.QuestPageFetchStatus
+import ru.agladkov.questgo.screens.questPage.models.QuestPageViewState
+import java.lang.Exception
 import javax.inject.Inject
 
 sealed class QuestPageError {
@@ -21,10 +27,9 @@ sealed class QuestPageError {
 
 class QuestPageViewModel @Inject constructor(
     private val questApi: QuestApi
-) : ViewModel() {
+) : BaseViewModel<QuestPageViewState, QuestPageAction, QuestPageEvent>() {
 
-    private var questPageId: Int? = null
-    private var questId: Int? = null
+    private var maxQuestPages = -1
     private val compositeDisposable = CompositeDisposable()
     private var correctAnswer = ""
     private var infoBlock: MutableList<ListItem> = emptyList<ListItem>().toMutableList()
@@ -38,52 +43,86 @@ class QuestPageViewModel @Inject constructor(
     val errorMessage: LiveData<QuestPageError?> = _errorMessage
     val successAction = MutableLiveData<Boolean>(false)
 
+    init {
+        viewState = QuestPageViewState()
+    }
+
     override fun onCleared() {
         compositeDisposable.dispose()
         super.onCleared()
     }
 
-    fun setParams(pageId: Int?, questId: Int?) {
-        this.questPageId = pageId
-        this.questId = questId
-    }
-
-    fun fetchPage() {
-        _isLoading.postValue(true)
-
-        if (questId != null && questPageId != null) {
-            questId?.let { questId ->
-                questApi.getQuest(questId = questId)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ response ->
-                        _isLoading.postValue(false)
-
-                        try {
-                            val currentItem = response.pages[questPageId!! - 1]
-                            _items.postValue(currentItem.components.map { it.mapToUI() })
-                            infoBlock = currentItem.info.map { it.mapToUI() }.toMutableList()
-                            correctAnswer = currentItem.code
-                        } catch (e: Exception) {
-                            _errorMessage.postValue(QuestPageError.RequestException)
-                        }
-                    }, {
-                        _isLoading.postValue(false)
-                        _errorMessage.postValue(QuestPageError.RequestException)
-                    })
-            }
-        } else {
-            _errorMessage.postValue(QuestPageError.RequestException)
+    override fun obtainEvent(viewEvent: QuestPageEvent) {
+        when (viewEvent) {
+            is QuestPageEvent.FetchInitial -> fetchPage(viewEvent.questId, viewEvent.questPage)
+            is QuestPageEvent.SendAnswer -> checkAnswer(viewEvent.code)
+            is QuestPageEvent.ShowNextPage -> checkNextPageAvailable()
         }
     }
 
-    fun checkAnswer(text: String) {
-        if (text.toUpperCase() == correctAnswer.toUpperCase()) {
-            successAction.postValue(true)
-            infoBlock.add(ButtonCellModel("Продолжить"))
-            _items.postValue(infoBlock)
+    private fun fetchPage(questId: Int?, questPage: Int?) {
+        if (questId == null) {
+            // Fallback to error
+            return
+        }
+
+        viewState = viewState.copy(
+            fetchStatus = QuestPageFetchStatus.Loading,
+            currentQuestId = questId,
+            currentPage = questPage ?: 0
+        )
+
+        compositeDisposable.add(
+            questApi.getQuest(questId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+                    viewState = try {
+                        val currentPage = response.pages[viewState.currentPage]
+                        viewState.copy(
+                            infoData = currentPage.info.map { it.mapToUI() },
+                            currentQuestMaxPages = response.pages.count(),
+                            correctAnswer = currentPage.code,
+                            fetchStatus = QuestPageFetchStatus.ShowContent(
+                                items = currentPage.components.map { it.mapToUI() }
+                            )
+                        )
+                    } catch (e: Exception) {
+                        viewState.copy(
+                            fetchStatus = QuestPageFetchStatus.Error(QuestPageError.RequestException)
+                        )
+                    }
+                }, {
+                    viewState = viewState.copy(
+                        fetchStatus = QuestPageFetchStatus.Error(QuestPageError.RequestException)
+                    )
+                })
+        )
+    }
+
+    private fun checkNextPageAvailable() {
+        viewAction = if (viewState.currentQuestMaxPages == viewState.currentPage + 1) {
+            QuestPageAction.OpenFinalPage
         } else {
-            _errorMessage.postValue(QuestPageError.WrongAnswerException)
+            QuestPageAction.OpenNextPage(
+                questId = viewState.currentQuestId,
+                questPage = viewState.currentPage + 1
+            )
+        }
+    }
+
+    private fun checkAnswer(text: String) {
+        viewState = if (text.equals(viewState.correctAnswer, ignoreCase = true)) {
+            val currentInfoBlock = viewState.infoData.toMutableList()
+            viewState.copy(
+                fetchStatus = QuestPageFetchStatus.ShowInfo(currentInfoBlock.apply {
+                    this += ButtonCellModel("Продолжить")
+                })
+            )
+        } else {
+            viewState.copy(
+                fetchStatus = QuestPageFetchStatus.Error(QuestPageError.WrongAnswerException)
+            )
         }
     }
 }

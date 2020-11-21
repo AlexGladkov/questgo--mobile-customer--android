@@ -1,7 +1,7 @@
 package ru.agladkov.questgo.common.models
 
 import android.os.Parcelable
-import ru.agladkov.questgo.data.remote.common.RemoteListItem
+import ru.agladkov.questgo.data.features.quest.remote.common.RemoteListItem
 
 interface ListItem : Parcelable {
     fun uniqueViewTypeId(): Int

@@ -10,6 +10,9 @@
         <action
             android:id="@+id/action_questListFragment_to_questInfoFragment"
             app:destination="@id/questInfoFragment" />
+        <action
+            android:id="@+id/action_questListFragment_to_questPageFragment"
+            app:destination="@id/questPageFragment" />
     </fragment>
     <fragment
         android:id="@+id/questInfoFragment"
@@ -32,13 +35,26 @@
         <action
             android:id="@+id/action_questPageFragment_to_thankYouPageFragment"
             app:destination="@id/thankYouPageFragment" />
+        <action
+            android:id="@+id/action_questPageFragment_to_fullImageFragment"
+            app:destination="@id/fullImageFragment" />
     </fragment>
     <dialog
         android:id="@+id/errorFragment"
         android:name="ru.agladkov.questgo.screens.error.ErrorFragment"
         android:label="ErrorFragment" />
-    <fragment
+    <dialog
         android:id="@+id/thankYouPageFragment"
         android:name="ru.agladkov.questgo.screens.thankYouPage.ThankYouPageFragment"
-        android:label="ThankYouPageFragment" />
+        android:label="ThankYouPageFragment" >
+        <action
+            android:id="@+id/action_thankYouPageFragment_to_questListFragment"
+            app:destination="@id/questListFragment"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true" />
+    </dialog>
+    <fragment
+        android:id="@+id/fullImageFragment"
+        android:name="ru.agladkov.questgo.screens.fullImage.FullImageFragment"
+        android:label="FullImageFragment" />
 </navigation>

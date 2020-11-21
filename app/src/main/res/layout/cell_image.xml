@@ -3,13 +3,12 @@
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
-    android:paddingBottom="8dp"
-    android:paddingTop="8dp">
+    android:paddingTop="16dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/contentImageView"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:scaleType="fitXY"/>
+        android:layout_height="168dp"
+        android:scaleType="centerCrop"/>
 
 </FrameLayout>

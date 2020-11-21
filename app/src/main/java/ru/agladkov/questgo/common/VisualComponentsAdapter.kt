@@ -12,6 +12,7 @@ class VisualComponentsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val listItems: MutableList<ListItem> = ArrayList()
 
     var buttonCellDelegate: ButtonCellDelegate? = null
+    var imageCellDelegate: ImageCellDelegate? = null
 
     fun setItems(newItems: List<ListItem>) {
         listItems.clear()
@@ -41,7 +42,10 @@ class VisualComponentsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.buttonCellDelegate = buttonCellDelegate
             }
             is HeaderViewHolder -> holder.bind(listItems[position] as? HeaderCellModel)
-            is ImageViewHolder -> holder.bind(listItems[position] as? ImageCellModel)
+            is ImageViewHolder -> {
+                holder.bind(listItems[position] as? ImageCellModel)
+                holder.imageCellDelegate = imageCellDelegate
+            }
             is TextViewHolder -> holder.bind(listItems[position] as? TextCellModel)
             is VideoViewHolder -> holder.bind(listItems[position] as? VideoCellModel)
         }

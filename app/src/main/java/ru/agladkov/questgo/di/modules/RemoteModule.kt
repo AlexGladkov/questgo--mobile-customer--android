@@ -7,8 +7,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.agladkov.QuestApp
-import ru.agladkov.questgo.data.remote.quest.QuestApi
+import ru.agladkov.questgo.data.features.quest.remote.quest.QuestApi
 
 @Module
 class RemoteModule {
