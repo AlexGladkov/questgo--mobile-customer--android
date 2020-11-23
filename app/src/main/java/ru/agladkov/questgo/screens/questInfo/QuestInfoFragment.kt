@@ -10,6 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PurchasesUpdatedListener
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.cell_button.*
 import kotlinx.android.synthetic.main.fragment_quest_info.*
@@ -36,6 +40,12 @@ class QuestInfoFragment : Fragment(R.layout.fragment_quest_info) {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: QuestInfoViewModel
 
+    private val purchasesUpdatedListener =
+        PurchasesUpdatedListener { billingResult, purchases ->
+            // To be implemented in a later section.
+        }
+    private lateinit var billingClient: BillingClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -54,9 +64,25 @@ class QuestInfoFragment : Fragment(R.layout.fragment_quest_info) {
         itemsView.adapter = visualComponentsAdapter
         itemsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
+        setupBillingSystem()
+
         viewModel.viewStates().observe(viewLifecycleOwner, Observer { bindViewState(it) })
         viewModel.viewEffects().observe(viewLifecycleOwner, Observer { bindViewAction(it) })
-        viewModel.obtainEvent(QuestInfoEvent.ScreenShown(questCellModel = arguments?.get(QUEST) as? QuestCellModel))
+        viewModel.obtainEvent(
+            QuestInfoEvent.StartBillingConnection(
+                questCellModel = arguments?.get(QUEST) as? QuestCellModel,
+                billingClient = billingClient
+            )
+        )
+    }
+
+    private fun setupBillingSystem() {
+        activity?.let {
+            billingClient = BillingClient.newBuilder(it)
+                .setListener(purchasesUpdatedListener)
+                .enablePendingPurchases()
+                .build()
+        }
     }
 
     private fun bindViewAction(viewAction: QuestInfoAction) {
@@ -73,7 +99,18 @@ class QuestInfoFragment : Fragment(R.layout.fragment_quest_info) {
     }
 
     private fun bindViewState(viewState: QuestInfoViewState) {
-        visualComponentsAdapter.setItems(viewState.visualItems)
+        when {
+            viewState.isLoading -> {
+                itemsView.visibility = View.GONE
+                loaderView.visibility = View.VISIBLE
+            }
+
+            !viewState.isLoading -> {
+                itemsView.visibility = View.VISIBLE
+                loaderView.visibility = View.GONE
+                visualComponentsAdapter.setItems(viewState.visualItems)
+            }
+        }
     }
 
     private fun routeToQuest(questId: Int, questPage: Int) {

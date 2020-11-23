@@ -1,6 +1,13 @@
 package ru.agladkov.questgo.screens.questInfo
 
+import android.os.Handler
+import android.util.Log
+import androidx.lifecycle.viewModelScope
+import com.android.billingclient.api.*
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.agladkov.questgo.base.BaseViewModel
 import ru.agladkov.questgo.common.models.ButtonCellModel
 import ru.agladkov.questgo.common.models.ListItem
@@ -30,26 +37,75 @@ class QuestInfoViewModel @Inject constructor(
 
     override fun obtainEvent(viewEvent: QuestInfoEvent) {
         when (viewEvent) {
-            is QuestInfoEvent.ScreenShown -> showDefaultData(questCellModel = viewEvent.questCellModel)
             is QuestInfoEvent.BuyQuest -> buyQuest()
+            is QuestInfoEvent.StartBillingConnection -> showDefaultData(
+                questCellModel = viewEvent.questCellModel,
+                billingClient = viewEvent.billingClient
+            )
         }
     }
 
-    private fun showDefaultData(questCellModel: QuestCellModel?) {
+    private var maxAttemptsToReconnect = 3
+    private var currentAttempt = 0
+    private fun showDefaultData(questCellModel: QuestCellModel?, billingClient: BillingClient) {
+        viewState = viewState.copy(
+            isLoading = true
+        )
+
         if (questCellModel == null) {
             // Fallback to error
             return
         }
 
-        questId = questCellModel.questId
-        val items = ArrayList<ListItem>().apply {
-            addAll(questCellModel.description ?: emptyList())
-            add(ButtonCellModel("Продолжить"))
-        }
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    currentAttempt = 0
 
-        viewState = viewState.copy(
-            visualItems = items
-        )
+                    val skuList = ArrayList<String>()
+                    skuList.add("ru.quest.once")
+                    val params = SkuDetailsParams.newBuilder()
+                    params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
+
+                    viewModelScope.launch {
+                        val skuDetailsResult = withContext(Dispatchers.IO) {
+                            billingClient.querySkuDetails(params.build())
+                        }
+
+                        val questSkuDetails = skuDetailsResult.skuDetailsList?.firstOrNull()
+
+                        questId = questCellModel.questId
+                        val items = ArrayList<ListItem>().apply {
+                            addAll(questCellModel.description ?: emptyList())
+                            add(ButtonCellModel("Купить за ${questSkuDetails?.price.orEmpty()}"))
+                        }
+
+                        viewState = viewState.copy(
+                            isLoading = false,
+                            visualItems = items
+                        )
+                    }
+                } else {
+                    Log.e("TAG", "Billing response ${billingResult.responseCode}")
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                currentAttempt += 1
+                if (currentAttempt > maxAttemptsToReconnect) {
+                    return
+                }
+
+                Handler().postDelayed({
+                    obtainEvent(
+                        viewEvent = QuestInfoEvent.StartBillingConnection(
+                            billingClient = billingClient,
+                            questCellModel = questCellModel
+                        )
+                    )
+                }, 5000)
+            }
+        })
     }
 
     private fun buyQuest() {

@@ -52,6 +52,12 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.1.0')
     implementation 'com.google.firebase:firebase-analytics'
 
+    // Billing
+    def billing_version = "3.0.1"
+
+    implementation "com.android.billingclient:billing:$billing_version"
+    implementation "com.android.billingclient:billing-ktx:$billing_version"
+
     // Room
     def room_version = "2.2.5"
     implementation "androidx.room:room-runtime:$room_version"

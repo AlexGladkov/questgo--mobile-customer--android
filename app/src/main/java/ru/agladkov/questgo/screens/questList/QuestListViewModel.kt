@@ -1,5 +1,7 @@
 package ru.agladkov.questgo.screens.questList
 
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -59,6 +61,8 @@ class QuestListViewModel @Inject constructor(
         viewAction = QuestListAction.OpenQuestInfo(questCellModel = model)
     }
 
+    private val maxFetchAttempts = 3
+    private var currentFetchAttempt = 0
     private fun fetchQuestList() {
         viewState = QuestListViewState.Loading
         compositeDisposable.add(
@@ -66,9 +70,18 @@ class QuestListViewModel @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
+                    currentFetchAttempt = 0
                     viewState = QuestListViewState.Success(response.items.map { it.mapToUI() })
                 }, {
-                    viewState = QuestListViewState.Error(message = R.string.error_loading_data)
+                    currentFetchAttempt += 1
+
+                    if (currentFetchAttempt > maxFetchAttempts) {
+                        viewState = QuestListViewState.Error(message = R.string.error_loading_data)
+                    } else {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            fetchQuestList()
+                        }, 5000)
+                    }
                 })
         )
     }

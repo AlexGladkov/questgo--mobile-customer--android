@@ -3,6 +3,7 @@
     package="ru.agladkov.questgo">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
         android:name="ru.agladkov.QuestApp"
