@@ -21,7 +21,9 @@ import ru.agladkov.questgo.R
 import ru.agladkov.questgo.common.VisualComponentsAdapter
 import ru.agladkov.questgo.common.models.ButtonCellModel
 import ru.agladkov.questgo.common.models.ListItem
+import ru.agladkov.questgo.common.models.TextButtonCellModel
 import ru.agladkov.questgo.common.viewholders.ButtonCellDelegate
+import ru.agladkov.questgo.common.viewholders.TextButtonCellDelegate
 import ru.agladkov.questgo.helpers.injectViewModel
 import ru.agladkov.questgo.screens.questInfo.models.QuestInfoAction
 import ru.agladkov.questgo.screens.questInfo.models.QuestInfoEvent

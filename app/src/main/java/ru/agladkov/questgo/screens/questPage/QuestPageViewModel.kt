@@ -83,6 +83,7 @@ class QuestPageViewModel @Inject constructor(
                             infoData = currentPage.info.map { it.mapToUI() },
                             currentQuestMaxPages = response.pages.count(),
                             correctAnswer = currentPage.code,
+                            needsToPay = currentPage.needsToPay,
                             fetchStatus = QuestPageFetchStatus.ShowContent(
                                 items = currentPage.components.map { it.mapToUI() }
                             )
@@ -104,10 +105,14 @@ class QuestPageViewModel @Inject constructor(
         viewAction = if (viewState.currentQuestMaxPages == viewState.currentPage + 1) {
             QuestPageAction.OpenFinalPage
         } else {
-            QuestPageAction.OpenNextPage(
-                questId = viewState.currentQuestId,
-                questPage = viewState.currentPage + 1
-            )
+            if (viewState.needsToPay) {
+                QuestPageAction.OpenPayPage
+            } else {
+                QuestPageAction.OpenNextPage(
+                    questId = viewState.currentQuestId,
+                    questPage = viewState.currentPage + 1
+                )
+            }
         }
     }
 

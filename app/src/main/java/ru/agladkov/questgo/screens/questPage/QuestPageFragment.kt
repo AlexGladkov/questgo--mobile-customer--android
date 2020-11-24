@@ -93,6 +93,7 @@ class QuestPageFragment : Fragment(R.layout.fragment_quest_page) {
             )
 
             is QuestPageAction.OpenFinalPage -> routeToThankYouPage()
+            is QuestPageAction.OpenPayPage -> routeToPayPage()
         }
     }
 
@@ -160,6 +161,12 @@ class QuestPageFragment : Fragment(R.layout.fragment_quest_page) {
         findNavController().navigate(
             R.id.action_questPageFragment_to_fullImageFragment,
             bundleOf(IMAGE_URL_KEY to model.value)
+        )
+    }
+
+    private fun routeToPayPage() {
+        findNavController().navigate(
+            R.id.action_questPageFragment_to_payFragment
         )
     }
 

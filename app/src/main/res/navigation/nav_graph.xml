@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_questPageFragment_to_fullImageFragment"
             app:destination="@id/fullImageFragment" />
+        <action
+            android:id="@+id/action_questPageFragment_to_payFragment"
+            app:destination="@id/payFragment" />
     </fragment>
     <dialog
         android:id="@+id/errorFragment"
@@ -57,4 +60,8 @@
         android:id="@+id/fullImageFragment"
         android:name="ru.agladkov.questgo.screens.fullImage.FullImageFragment"
         android:label="FullImageFragment" />
+    <dialog
+        android:id="@+id/payFragment"
+        android:name="ru.agladkov.questgo.screens.pay.PayFragment"
+        android:label="PayFragment" />
 </navigation>

@@ -57,55 +57,57 @@ class QuestInfoViewModel @Inject constructor(
             return
         }
 
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    currentAttempt = 0
+        questId = questCellModel.questId
+        val items = ArrayList<ListItem>().apply {
+            addAll(questCellModel.description ?: emptyList())
+            add(ButtonCellModel("Продолжить"))
+        }
 
-                    val skuList = ArrayList<String>()
-                    skuList.add("ru.quest.once")
-                    val params = SkuDetailsParams.newBuilder()
-                    params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
+        viewState = viewState.copy(
+            isLoading = false,
+            visualItems = items
+        )
 
-                    viewModelScope.launch {
-                        val skuDetailsResult = withContext(Dispatchers.IO) {
-                            billingClient.querySkuDetails(params.build())
-                        }
-
-                        val questSkuDetails = skuDetailsResult.skuDetailsList?.firstOrNull()
-
-                        questId = questCellModel.questId
-                        val items = ArrayList<ListItem>().apply {
-                            addAll(questCellModel.description ?: emptyList())
-                            add(ButtonCellModel("Купить за ${questSkuDetails?.price.orEmpty()}"))
-                        }
-
-                        viewState = viewState.copy(
-                            isLoading = false,
-                            visualItems = items
-                        )
-                    }
-                } else {
-                    Log.e("TAG", "Billing response ${billingResult.responseCode}")
-                }
-            }
-
-            override fun onBillingServiceDisconnected() {
-                currentAttempt += 1
-                if (currentAttempt > maxAttemptsToReconnect) {
-                    return
-                }
-
-                Handler().postDelayed({
-                    obtainEvent(
-                        viewEvent = QuestInfoEvent.StartBillingConnection(
-                            billingClient = billingClient,
-                            questCellModel = questCellModel
-                        )
-                    )
-                }, 5000)
-            }
-        })
+//        billingClient.startConnection(object : BillingClientStateListener {
+//            override fun onBillingSetupFinished(billingResult: BillingResult) {
+//                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+//                    currentAttempt = 0
+//
+//                    val skuList = ArrayList<String>()
+//                    skuList.add("ru.quest.once")
+//                    val params = SkuDetailsParams.newBuilder()
+//                    params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
+//
+//                    viewModelScope.launch {
+//                        val skuDetailsResult = withContext(Dispatchers.IO) {
+//                            billingClient.querySkuDetails(params.build())
+//                        }
+//
+//                        val questSkuDetails = skuDetailsResult.skuDetailsList?.firstOrNull()
+//
+//
+//                    }
+//                } else {
+//                    Log.e("TAG", "Billing response ${billingResult.responseCode}")
+//                }
+//            }
+//
+//            override fun onBillingServiceDisconnected() {
+//                currentAttempt += 1
+//                if (currentAttempt > maxAttemptsToReconnect) {
+//                    return
+//                }
+//
+//                Handler().postDelayed({
+//                    obtainEvent(
+//                        viewEvent = QuestInfoEvent.StartBillingConnection(
+//                            billingClient = billingClient,
+//                            questCellModel = questCellModel
+//                        )
+//                    )
+//                }, 5000)
+//            }
+//        })
     }
 
     private fun buyQuest() {

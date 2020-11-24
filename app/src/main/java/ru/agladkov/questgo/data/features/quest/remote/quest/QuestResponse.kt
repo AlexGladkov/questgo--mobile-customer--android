@@ -10,6 +10,7 @@ data class QuestResponse(
 data class QuestPage(
     val pageId: Int,
     val code: String,
+    val needsToPay: Boolean,
     val components: List<RemoteListItem>,
     val info: List<RemoteListItem>
 )
