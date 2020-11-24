@@ -5,4 +5,5 @@ import com.android.billingclient.api.BillingClient
 sealed class PayEvent {
     object ScreenShown : PayEvent()
     data class BuyQuest(val billingClient: BillingClient) : PayEvent()
+    data class ScreenResumed(val navigationResult: Boolean) : PayEvent()
 }

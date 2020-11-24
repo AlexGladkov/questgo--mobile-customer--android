@@ -24,8 +24,13 @@ import ru.agladkov.questgo.common.models.ListItem
 import ru.agladkov.questgo.common.viewholders.ButtonCellDelegate
 import ru.agladkov.questgo.common.viewholders.ImageCellDelegate
 import ru.agladkov.questgo.data.features.quest.remote.quest.QuestPage
+import ru.agladkov.questgo.helpers.getNavigationResult
 import ru.agladkov.questgo.helpers.injectViewModel
+import ru.agladkov.questgo.helpers.setNavigationResult
 import ru.agladkov.questgo.screens.fullImage.FullImageFragment.Companion.IMAGE_URL_KEY
+import ru.agladkov.questgo.screens.pay.PayFragment
+import ru.agladkov.questgo.screens.pay.models.PayEvent
+import ru.agladkov.questgo.screens.promo.PromoFragment
 import ru.agladkov.questgo.screens.questPage.models.QuestPageAction
 import ru.agladkov.questgo.screens.questPage.models.QuestPageEvent
 import ru.agladkov.questgo.screens.questPage.models.QuestPageFetchStatus
@@ -83,6 +88,18 @@ class QuestPageFragment : Fragment(R.layout.fragment_quest_page) {
                 questId = arguments?.getInt(QUEST_ID)
             )
         )
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+            PayFragment.PAY_RESULT_KEY
+        )?.observe(viewLifecycleOwner, Observer {
+            viewModel.obtainEvent(QuestPageEvent.ScreenResumed(it))
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.obtainEvent(QuestPageEvent.ScreenResumed(getNavigationResult<Boolean>(PayFragment.PAY_RESULT_KEY)))
+        setNavigationResult(PayFragment.PAY_RESULT_KEY, null)
     }
 
     private fun bindViewAction(viewAction: QuestPageAction) {

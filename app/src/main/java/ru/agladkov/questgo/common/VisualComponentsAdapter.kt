@@ -31,6 +31,7 @@ class VisualComponentsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             3 -> TextViewHolder(layoutInflater.inflate(R.layout.cell_text, parent, false))
             4 -> VideoViewHolder(layoutInflater.inflate(R.layout.cell_video, parent, false))
             5 -> TextButtonViewHolder(layoutInflater.inflate(R.layout.cell_button_text, parent, false))
+            6 -> TextFieldViewHolder(layoutInflater.inflate(R.layout.cell_text_field, parent, false))
             else -> throw NotImplementedError("You don't implement this $viewType of holder")
         }
     }
@@ -54,6 +55,7 @@ class VisualComponentsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             is TextViewHolder -> holder.bind(listItems[position] as? TextCellModel)
             is VideoViewHolder -> holder.bind(listItems[position] as? VideoCellModel)
+            is TextFieldViewHolder -> holder.bind(listItems[position] as? TextFieldCellModel)
         }
     }
 

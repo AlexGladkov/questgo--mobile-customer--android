@@ -57,6 +57,7 @@ class QuestPageViewModel @Inject constructor(
             is QuestPageEvent.FetchInitial -> fetchPage(viewEvent.questId, viewEvent.questPage)
             is QuestPageEvent.SendAnswer -> checkAnswer(viewEvent.code)
             is QuestPageEvent.ShowNextPage -> checkNextPageAvailable()
+            is QuestPageEvent.ScreenResumed -> checkPayResult(viewEvent.navigationResult)
         }
     }
 
@@ -113,6 +114,15 @@ class QuestPageViewModel @Inject constructor(
                     questPage = viewState.currentPage + 1
                 )
             }
+        }
+    }
+
+    private fun checkPayResult(isSuccessful: Boolean?) {
+        if (isSuccessful == true) {
+            viewAction = QuestPageAction.OpenNextPage(
+                questId = viewState.currentQuestId,
+                questPage = viewState.currentPage + 1
+            )
         }
     }
 

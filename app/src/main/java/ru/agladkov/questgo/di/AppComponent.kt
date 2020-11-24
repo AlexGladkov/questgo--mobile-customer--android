@@ -8,6 +8,7 @@ import dagger.android.AndroidInjector
 import ru.agladkov.QuestApp
 import ru.agladkov.questgo.di.modules.*
 import ru.agladkov.questgo.screens.pay.PayModule
+import ru.agladkov.questgo.screens.promo.PromoModule
 import ru.agladkov.questgo.screens.questInfo.QuestInfoModule
 import ru.agladkov.questgo.screens.questList.QuestListModule
 import ru.agladkov.questgo.screens.questList.QuestListViewModel
@@ -27,7 +28,8 @@ import ru.agladkov.questgo.screens.thankYouPage.ThankYouPageModule
         ThankYouPageModule::class,
         RepositoryModule::class,
         PayModule::class,
-        AppModule::class
+        AppModule::class,
+        PromoModule::class
     ]
 )
 @AppScope

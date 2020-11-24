@@ -9,4 +9,9 @@
     <string name="action_finish_quest">Завершить квест</string>
     <string name="thank_you_page_share_text">Классные квесты от QuestGo! Привычные маршруты и городские пейзажи заиграли новыми красками. Скачивайте приложение, рекомендую!</string>
     <string name="error_loading_data">Ошибка при загрузке данных</string>
+    <string name="promo_title">Введите промокод</string>
+    <string name="promo_hint">Например, promoaction…</string>
+    <string name="promo_buy">Отправить</string>
+    <string name="promo_error">Не удалось применить промокод</string>
+    <string name="promo_not_valid">Промокод истек или введен неправильно</string>
 </resources>

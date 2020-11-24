@@ -63,5 +63,13 @@
     <dialog
         android:id="@+id/payFragment"
         android:name="ru.agladkov.questgo.screens.pay.PayFragment"
-        android:label="PayFragment" />
+        android:label="PayFragment" >
+        <action
+            android:id="@+id/action_payFragment_to_promoFragment"
+            app:destination="@id/promoFragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/promoFragment"
+        android:name="ru.agladkov.questgo.screens.promo.PromoFragment"
+        android:label="PromoFragment" />
 </navigation>

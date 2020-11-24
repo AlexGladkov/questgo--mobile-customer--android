@@ -22,7 +22,12 @@ class PayViewModel @Inject constructor(
         when (viewEvent) {
             is PayEvent.BuyQuest -> performBuy(billingClient = viewEvent.billingClient)
             is PayEvent.ScreenShown -> renderScreen()
+            is PayEvent.ScreenResumed -> parsePromoResult(viewEvent.navigationResult)
         }
+    }
+
+    private fun parsePromoResult(navigationResult: Boolean) {
+        viewAction = PayAction.CloseWithResult(navigationResult)
     }
 
     private fun renderScreen() {
