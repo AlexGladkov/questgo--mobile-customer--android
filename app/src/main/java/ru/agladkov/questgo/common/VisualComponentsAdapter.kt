@@ -14,6 +14,7 @@ class VisualComponentsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var buttonCellDelegate: ButtonCellDelegate? = null
     var imageCellDelegate: ImageCellDelegate? = null
     var textButtonCellDelegate: TextButtonCellDelegate? = null
+    var textFieldCellDelegate: TextFieldCellDelegate? = null
 
     fun setItems(newItems: List<ListItem>) {
         listItems.clear()
@@ -32,6 +33,7 @@ class VisualComponentsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             4 -> VideoViewHolder(layoutInflater.inflate(R.layout.cell_video, parent, false))
             5 -> TextButtonViewHolder(layoutInflater.inflate(R.layout.cell_button_text, parent, false))
             6 -> TextFieldViewHolder(layoutInflater.inflate(R.layout.cell_text_field, parent, false))
+            7 -> LoaderViewHolder(layoutInflater.inflate(R.layout.cell_loader, parent, false))
             else -> throw NotImplementedError("You don't implement this $viewType of holder")
         }
     }
@@ -55,7 +57,10 @@ class VisualComponentsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             is TextViewHolder -> holder.bind(listItems[position] as? TextCellModel)
             is VideoViewHolder -> holder.bind(listItems[position] as? VideoCellModel)
-            is TextFieldViewHolder -> holder.bind(listItems[position] as? TextFieldCellModel)
+            is TextFieldViewHolder -> {
+                holder.bind(listItems[position] as? TextFieldCellModel)
+                holder.textFieldCellDelegate = textFieldCellDelegate
+            }
         }
     }
 

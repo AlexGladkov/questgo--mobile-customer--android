@@ -5,15 +5,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.PurchasesUpdatedListener
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_quest_list.*
 import kotlinx.android.synthetic.main.fragment_quest_page.*
 import kotlinx.android.synthetic.main.fragment_quest_page.itemsView
 import ru.agladkov.questgo.R
@@ -23,10 +24,8 @@ import ru.agladkov.questgo.common.models.ImageCellModel
 import ru.agladkov.questgo.common.models.ListItem
 import ru.agladkov.questgo.common.viewholders.ButtonCellDelegate
 import ru.agladkov.questgo.common.viewholders.ImageCellDelegate
-import ru.agladkov.questgo.data.features.quest.remote.quest.QuestPage
-import ru.agladkov.questgo.helpers.getNavigationResult
+import ru.agladkov.questgo.helpers.getNavigationLiveData
 import ru.agladkov.questgo.helpers.injectViewModel
-import ru.agladkov.questgo.helpers.setNavigationResult
 import ru.agladkov.questgo.screens.fullImage.FullImageFragment.Companion.IMAGE_URL_KEY
 import ru.agladkov.questgo.screens.pay.PayFragment
 import ru.agladkov.questgo.screens.pay.models.PayEvent
@@ -43,6 +42,19 @@ class QuestPageFragment : Fragment(R.layout.fragment_quest_page) {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: QuestPageViewModel
+
+    private val purchasesUpdatedListener =
+        PurchasesUpdatedListener { billingResult, purchases ->
+            viewModel.obtainEvent(
+                QuestPageEvent.HandlePayCode(
+                    billingResult = billingResult,
+                    purchases = purchases,
+                    billingClient = billingClient
+                )
+            )
+        }
+
+    private lateinit var billingClient: BillingClient
 
     private val visualComponentsAdapter = VisualComponentsAdapter()
 
@@ -89,17 +101,32 @@ class QuestPageFragment : Fragment(R.layout.fragment_quest_page) {
             )
         )
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
-            PayFragment.PAY_RESULT_KEY
-        )?.observe(viewLifecycleOwner, Observer {
-            viewModel.obtainEvent(QuestPageEvent.ScreenResumed(it))
-        })
+        setupBillingSystem()
+
+        getNavigationLiveData<Boolean>(PayFragment.PAY_RESULT_KEY)?.observe(
+            viewLifecycleOwner,
+            Observer {
+                viewModel.obtainEvent(QuestPageEvent.ScreenResumed(it))
+            })
+
+        getNavigationLiveData<Boolean>(PayFragment.PAY_STARTING_KEY)?.observe(
+            viewLifecycleOwner,
+            Observer {
+                viewModel.obtainEvent(
+                    QuestPageEvent.CheckBuyState(
+                        billingClient = billingClient,
+                        navigationResult = it
+                    )
+                )
+            })
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.obtainEvent(QuestPageEvent.ScreenResumed(getNavigationResult<Boolean>(PayFragment.PAY_RESULT_KEY)))
-        setNavigationResult(PayFragment.PAY_RESULT_KEY, null)
+    private fun setupBillingSystem() {
+        activity?.let {
+            billingClient = BillingClient.newBuilder(it)
+                .setListener(purchasesUpdatedListener)                .enablePendingPurchases()
+                .build()
+        }
     }
 
     private fun bindViewAction(viewAction: QuestPageAction) {
@@ -108,6 +135,19 @@ class QuestPageFragment : Fragment(R.layout.fragment_quest_page) {
                 questId = viewAction.questId,
                 questPage = viewAction.questPage
             )
+
+            is QuestPageAction.ShowError -> Toast.makeText(
+                context,
+                getString(viewAction.message),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            is QuestPageAction.ShowPayFlow -> {
+                activity?.let {
+                    val responseCode =
+                        billingClient.launchBillingFlow(it, viewAction.params).responseCode
+                }
+            }
 
             is QuestPageAction.OpenFinalPage -> routeToThankYouPage()
             is QuestPageAction.OpenPayPage -> routeToPayPage()

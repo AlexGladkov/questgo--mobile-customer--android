@@ -14,4 +14,14 @@
     <string name="promo_buy">Отправить</string>
     <string name="promo_error">Не удалось применить промокод</string>
     <string name="promo_not_valid">Промокод истек или введен неправильно</string>
+    <string name="action_buy">Купить квест</string>
+    <string name="action_promo">Применить промо-код</string>
+    <string name="start_fragment_end_title">Конец ознакомительного фрагмента</string>
+    <string name="start_fragment_end_subtitle">Вы прошли ознакомительный участок квеста. Дальнейшее прохождение будет доступно после оплаты.</string>
+    <string name="error_pay">Не удалось купить квест, попробуйте позднее</string>
+    <string name="error_pay_no_items">Не удалось получить идентификатор покупки. Попробуйте еще раз позже</string>
+    <string name="error_pay_in_app">Не удалось оплатить товар, попробуйте позже</string>
+    <string name="error_pay_canceled">Вы отменили покупку</string>
+    <string name="error_pay_code">Встроенные покупки не поддерживаются</string>
+    <string name="successfull_bought">Вы успешно оплатили товар</string>
 </resources>

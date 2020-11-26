@@ -9,7 +9,7 @@ import ru.agladkov.questgo.R
 import ru.agladkov.questgo.common.models.TextFieldCellModel
 
 interface TextFieldCellDelegate {
-    fun onTextChanged(newValue: String)
+    fun onTextChanged(newValue: String, model: TextFieldCellModel)
 }
 
 class TextFieldViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,7 +26,9 @@ class TextFieldViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                textFieldCellDelegate?.onTextChanged(s?.toString().orEmpty())
+                model?.let {
+                    textFieldCellDelegate?.onTextChanged(s?.toString().orEmpty(), model = model)
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {

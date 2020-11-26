@@ -39,15 +39,14 @@ class QuestInfoViewModel @Inject constructor(
         when (viewEvent) {
             is QuestInfoEvent.BuyQuest -> buyQuest()
             is QuestInfoEvent.StartBillingConnection -> showDefaultData(
-                questCellModel = viewEvent.questCellModel,
-                billingClient = viewEvent.billingClient
+                questCellModel = viewEvent.questCellModel
             )
         }
     }
 
     private var maxAttemptsToReconnect = 3
     private var currentAttempt = 0
-    private fun showDefaultData(questCellModel: QuestCellModel?, billingClient: BillingClient) {
+    private fun showDefaultData(questCellModel: QuestCellModel?) {
         viewState = viewState.copy(
             isLoading = true
         )
@@ -59,55 +58,14 @@ class QuestInfoViewModel @Inject constructor(
 
         questId = questCellModel.questId
         val items = ArrayList<ListItem>().apply {
-            addAll(questCellModel.description ?: emptyList())
-            add(ButtonCellModel("Продолжить"))
+            addAll(questCellModel.description)
+            add(ButtonCellModel("Начать играть бесплатно"))
         }
 
         viewState = viewState.copy(
             isLoading = false,
             visualItems = items
         )
-
-//        billingClient.startConnection(object : BillingClientStateListener {
-//            override fun onBillingSetupFinished(billingResult: BillingResult) {
-//                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-//                    currentAttempt = 0
-//
-//                    val skuList = ArrayList<String>()
-//                    skuList.add("ru.quest.once")
-//                    val params = SkuDetailsParams.newBuilder()
-//                    params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
-//
-//                    viewModelScope.launch {
-//                        val skuDetailsResult = withContext(Dispatchers.IO) {
-//                            billingClient.querySkuDetails(params.build())
-//                        }
-//
-//                        val questSkuDetails = skuDetailsResult.skuDetailsList?.firstOrNull()
-//
-//
-//                    }
-//                } else {
-//                    Log.e("TAG", "Billing response ${billingResult.responseCode}")
-//                }
-//            }
-//
-//            override fun onBillingServiceDisconnected() {
-//                currentAttempt += 1
-//                if (currentAttempt > maxAttemptsToReconnect) {
-//                    return
-//                }
-//
-//                Handler().postDelayed({
-//                    obtainEvent(
-//                        viewEvent = QuestInfoEvent.StartBillingConnection(
-//                            billingClient = billingClient,
-//                            questCellModel = questCellModel
-//                        )
-//                    )
-//                }, 5000)
-//            }
-//        })
     }
 
     private fun buyQuest() {

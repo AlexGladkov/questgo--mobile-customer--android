@@ -9,6 +9,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.agladkov.questgo.R
+import ru.agladkov.questgo.analytics.AnalyticsTracker
+import ru.agladkov.questgo.analytics.events.PurchaseEvents
+import ru.agladkov.questgo.analytics.events.QuestListEvents
 import ru.agladkov.questgo.base.BaseViewModel
 import ru.agladkov.questgo.data.features.configuration.UserConfigurationLocalDataSource
 import ru.agladkov.questgo.data.features.quest.remote.quest.QuestApi
@@ -24,7 +27,8 @@ import javax.inject.Inject
 
 class QuestListViewModel @Inject constructor(
     private val questApi: QuestApi,
-    private val userConfigurationLocalDataSource: UserConfigurationLocalDataSource
+    private val userConfigurationLocalDataSource: UserConfigurationLocalDataSource,
+    private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<QuestListViewState, QuestListAction, QuestListEvent>() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -71,11 +75,20 @@ class QuestListViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
                     currentFetchAttempt = 0
+
+                    with(analyticsTracker) {
+                        QuestListEvents.ListLoaded(response.items.count()).track()
+                    }
+
                     viewState = QuestListViewState.Success(response.items.map { it.mapToUI() })
                 }, {
                     currentFetchAttempt += 1
 
                     if (currentFetchAttempt > maxFetchAttempts) {
+                        with(analyticsTracker) {
+                            QuestListEvents.ListError(attemptsCount = currentFetchAttempt).track()
+                        }
+
                         viewState = QuestListViewState.Error(message = R.string.error_loading_data)
                     } else {
                         Handler(Looper.getMainLooper()).postDelayed({

@@ -5,5 +5,5 @@ import ru.agladkov.questgo.screens.questList.adapter.QuestCellModel
 
 sealed class QuestInfoEvent {
     object BuyQuest : QuestInfoEvent()
-    data class StartBillingConnection(val billingClient: BillingClient, val questCellModel: QuestCellModel?) : QuestInfoEvent()
+    data class StartBillingConnection(val questCellModel: QuestCellModel?) : QuestInfoEvent()
 }

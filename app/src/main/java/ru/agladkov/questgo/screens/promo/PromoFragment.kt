@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_promo.*
 import ru.agladkov.questgo.R
 import ru.agladkov.questgo.common.VisualComponentsAdapter
@@ -17,6 +18,7 @@ import ru.agladkov.questgo.common.models.HeaderCellModel
 import ru.agladkov.questgo.common.models.ListItem
 import ru.agladkov.questgo.common.models.TextFieldCellModel
 import ru.agladkov.questgo.common.viewholders.ButtonCellDelegate
+import ru.agladkov.questgo.common.viewholders.TextFieldCellDelegate
 import ru.agladkov.questgo.helpers.injectViewModel
 import ru.agladkov.questgo.helpers.setNavigationResult
 import ru.agladkov.questgo.screens.promo.models.PromoAction
@@ -37,11 +39,18 @@ class PromoFragment : BottomSheetDialogFragment() {
     private val visualComponentsAdapter = VisualComponentsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
+
+        visualComponentsAdapter.textFieldCellDelegate = object : TextFieldCellDelegate {
+            override fun onTextChanged(newValue: String, model: TextFieldCellModel) {
+                viewModel.obtainEvent(PromoEvent.CodeChanges(newValue = newValue))
+            }
+        }
 
         visualComponentsAdapter.buttonCellDelegate = object : ButtonCellDelegate {
             override fun onButtonClick(model: ButtonCellModel) {
-
+                viewModel.obtainEvent(PromoEvent.ApplyCode)
             }
         }
     }

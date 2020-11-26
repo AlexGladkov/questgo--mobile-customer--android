@@ -1,13 +1,17 @@
 package ru.agladkov.questgo.screens.pay
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.PurchasesUpdatedListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_quest_info.*
@@ -24,9 +28,6 @@ import ru.agladkov.questgo.screens.pay.models.PayAction
 import ru.agladkov.questgo.screens.pay.models.PayEvent
 import ru.agladkov.questgo.screens.pay.models.PayViewState
 import ru.agladkov.questgo.screens.promo.PromoFragment.Companion.PROMO_RESULT_KEY
-import ru.agladkov.questgo.screens.questInfo.QuestInfoFragment
-import ru.agladkov.questgo.screens.questInfo.models.QuestInfoEvent
-import ru.agladkov.questgo.screens.questList.adapter.QuestCellModel
 import javax.inject.Inject
 
 class PayFragment : BottomSheetDialogFragment() {
@@ -49,7 +50,7 @@ class PayFragment : BottomSheetDialogFragment() {
 
         visualComponentsAdapter.buttonCellDelegate = object : ButtonCellDelegate {
             override fun onButtonClick(model: ButtonCellModel) {
-
+                viewModel.obtainEvent(PayEvent.BuyQuest)
             }
         }
     }
@@ -86,12 +87,18 @@ class PayFragment : BottomSheetDialogFragment() {
         when (viewAction) {
             is PayAction.CloseWithResult -> {
                 setNavigationResult(PAY_RESULT_KEY, viewAction.isSuccessful)
+                setNavigationResult(PAY_STARTING_KEY, viewAction.isStartPay)
                 activity?.onBackPressed()
+            }
+
+            is PayAction.ShowError -> {
+                Toast.makeText(context, getString(viewAction.message), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     companion object {
         const val PAY_RESULT_KEY = "payResultKey"
+        const val PAY_STARTING_KEY = "payStartingKey"
     }
 }

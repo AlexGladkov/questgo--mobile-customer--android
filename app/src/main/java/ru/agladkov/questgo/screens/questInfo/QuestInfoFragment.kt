@@ -42,12 +42,6 @@ class QuestInfoFragment : Fragment(R.layout.fragment_quest_info) {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: QuestInfoViewModel
 
-    private val purchasesUpdatedListener =
-        PurchasesUpdatedListener { billingResult, purchases ->
-            // To be implemented in a later section.
-        }
-    private lateinit var billingClient: BillingClient
-
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -66,25 +60,13 @@ class QuestInfoFragment : Fragment(R.layout.fragment_quest_info) {
         itemsView.adapter = visualComponentsAdapter
         itemsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-        setupBillingSystem()
-
         viewModel.viewStates().observe(viewLifecycleOwner, Observer { bindViewState(it) })
         viewModel.viewEffects().observe(viewLifecycleOwner, Observer { bindViewAction(it) })
         viewModel.obtainEvent(
             QuestInfoEvent.StartBillingConnection(
-                questCellModel = arguments?.get(QUEST) as? QuestCellModel,
-                billingClient = billingClient
+                questCellModel = arguments?.get(QUEST) as? QuestCellModel
             )
         )
-    }
-
-    private fun setupBillingSystem() {
-        activity?.let {
-            billingClient = BillingClient.newBuilder(it)
-                .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
-                .build()
-        }
     }
 
     private fun bindViewAction(viewAction: QuestInfoAction) {

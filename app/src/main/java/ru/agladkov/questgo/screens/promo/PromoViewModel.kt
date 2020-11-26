@@ -1,15 +1,13 @@
 package ru.agladkov.questgo.screens.promo
 
 import android.content.Context
+import androidx.loader.content.Loader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.agladkov.questgo.R
 import ru.agladkov.questgo.base.BaseViewModel
-import ru.agladkov.questgo.common.models.ButtonCellModel
-import ru.agladkov.questgo.common.models.HeaderCellModel
-import ru.agladkov.questgo.common.models.ListItem
-import ru.agladkov.questgo.common.models.TextFieldCellModel
+import ru.agladkov.questgo.common.models.*
 import ru.agladkov.questgo.data.features.quest.remote.promo.PromoApi
 import ru.agladkov.questgo.screens.promo.models.PromoAction
 import ru.agladkov.questgo.screens.promo.models.PromoEvent
@@ -22,6 +20,10 @@ class PromoViewModel @Inject constructor(
 ) : BaseViewModel<PromoViewState, PromoAction, PromoEvent>() {
 
     private val compositeDisposable = CompositeDisposable()
+
+    init {
+        viewState = PromoViewState()
+    }
 
     override fun onCleared() {
         compositeDisposable.clear()
@@ -46,22 +48,39 @@ class PromoViewModel @Inject constructor(
         viewState = viewState.copy(renderData = renderData)
     }
 
+    private fun setSending(sendingStatus: Boolean) {
+        val currentRender = viewState.renderData.toMutableList()
+        when (sendingStatus) {
+            true -> {
+                currentRender.removeAll { it is ButtonCellModel }
+                currentRender.add(LoaderCellModel(identifier = 0))
+            }
+
+            else -> {
+                currentRender.removeAll { it is LoaderCellModel }
+                currentRender.add(ButtonCellModel(title = context.getString(R.string.promo_buy)))
+            }
+        }
+
+        viewState = viewState.copy(renderData = currentRender)
+    }
+
     private fun performApply() {
-        viewState = viewState.copy(isSending = true)
+        setSending(true)
 
         compositeDisposable.add(
             promoApi.getPromo(code = viewState.code)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    if (it.isValid) {
-                        viewAction = PromoAction.ApplyResult
+                    viewAction = if (it.isValid) {
+                        PromoAction.ApplyResult
                     } else {
-                        viewState = viewState.copy(isSending = false)
-                        viewAction = PromoAction.ShowError(message = R.string.promo_not_valid)
+                        setSending(false)
+                        PromoAction.ShowError(message = R.string.promo_not_valid)
                     }
                 }, {
-                    viewState = viewState.copy(isSending = false)
+                    setSending(false)
                     viewAction = PromoAction.ShowError(message = R.string.promo_error)
                 })
         )
