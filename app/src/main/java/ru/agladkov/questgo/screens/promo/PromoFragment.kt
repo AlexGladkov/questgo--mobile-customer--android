@@ -5,41 +5,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_promo.*
 import ru.agladkov.questgo.R
 import ru.agladkov.questgo.common.VisualComponentsAdapter
 import ru.agladkov.questgo.common.models.ButtonCellModel
-import ru.agladkov.questgo.common.models.HeaderCellModel
-import ru.agladkov.questgo.common.models.ListItem
 import ru.agladkov.questgo.common.models.TextFieldCellModel
 import ru.agladkov.questgo.common.viewholders.ButtonCellDelegate
 import ru.agladkov.questgo.common.viewholders.TextFieldCellDelegate
-import ru.agladkov.questgo.helpers.injectViewModel
 import ru.agladkov.questgo.helpers.setNavigationResult
 import ru.agladkov.questgo.screens.promo.models.PromoAction
 import ru.agladkov.questgo.screens.promo.models.PromoEvent
 import ru.agladkov.questgo.screens.promo.models.PromoViewState
-import ru.agladkov.questgo.screens.questInfo.QuestInfoFragment
-import ru.agladkov.questgo.screens.questInfo.QuestInfoViewModel
-import ru.agladkov.questgo.screens.questInfo.models.QuestInfoEvent
-import ru.agladkov.questgo.screens.questList.adapter.QuestCellModel
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class PromoFragment : BottomSheetDialogFragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: PromoViewModel
+    private val viewModel: PromoViewModel by viewModels()
 
     private val visualComponentsAdapter = VisualComponentsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         visualComponentsAdapter.textFieldCellDelegate = object : TextFieldCellDelegate {
@@ -63,8 +53,6 @@ class PromoFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = injectViewModel(factory = viewModelFactory)
-
         itemsView.adapter = visualComponentsAdapter
         itemsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 

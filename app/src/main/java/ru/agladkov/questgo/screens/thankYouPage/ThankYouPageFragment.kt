@@ -4,38 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_thank_you_page.*
 import ru.agladkov.questgo.R
 import ru.agladkov.questgo.common.VisualComponentsAdapter
 import ru.agladkov.questgo.common.models.*
 import ru.agladkov.questgo.common.viewholders.ButtonCellDelegate
-import ru.agladkov.questgo.common.viewholders.ImageCellDelegate
-import ru.agladkov.questgo.helpers.injectViewModel
-import ru.agladkov.questgo.screens.questList.models.QuestListEvent
-import ru.agladkov.questgo.screens.questPage.QuestPageViewModel
 import ru.agladkov.questgo.screens.thankYouPage.models.ThankYouPageAction
 import ru.agladkov.questgo.screens.thankYouPage.models.ThankYouPageEvent
 import ru.agladkov.questgo.screens.thankYouPage.models.ThankYouPageViewState
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class ThankYouPageFragment : BottomSheetDialogFragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: ThankYouPageViewModel
-
+    private val viewModel: ThankYouPageViewModel by viewModels()
     private val visualComponentsAdapter = VisualComponentsAdapter()
     private lateinit var router: ThankYouPageRouter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         router = ThankYouPageRouterImpl(this)
@@ -57,8 +47,6 @@ class ThankYouPageFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = injectViewModel(factory = viewModelFactory)
-
         itemsView.adapter = visualComponentsAdapter
         itemsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 

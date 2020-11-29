@@ -1,19 +1,16 @@
 package ru.agladkov.questgo.screens.pay
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.PurchasesUpdatedListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_quest_info.*
 import ru.agladkov.questgo.R
 import ru.agladkov.questgo.common.VisualComponentsAdapter
@@ -21,25 +18,19 @@ import ru.agladkov.questgo.common.models.ButtonCellModel
 import ru.agladkov.questgo.common.models.TextButtonCellModel
 import ru.agladkov.questgo.common.viewholders.ButtonCellDelegate
 import ru.agladkov.questgo.common.viewholders.TextButtonCellDelegate
-import ru.agladkov.questgo.helpers.getNavigationResult
-import ru.agladkov.questgo.helpers.injectViewModel
 import ru.agladkov.questgo.helpers.setNavigationResult
 import ru.agladkov.questgo.screens.pay.models.PayAction
 import ru.agladkov.questgo.screens.pay.models.PayEvent
 import ru.agladkov.questgo.screens.pay.models.PayViewState
 import ru.agladkov.questgo.screens.promo.PromoFragment.Companion.PROMO_RESULT_KEY
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class PayFragment : BottomSheetDialogFragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: PayViewModel
-
+    private val viewModel: PayViewModel by viewModels()
     private val visualComponentsAdapter = VisualComponentsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         visualComponentsAdapter.textButtonCellDelegate = object : TextButtonCellDelegate {
@@ -63,8 +54,6 @@ class PayFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = injectViewModel(factory = viewModelFactory)
-
         itemsView.adapter = visualComponentsAdapter
         itemsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
