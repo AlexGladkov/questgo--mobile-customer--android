@@ -3,17 +3,18 @@ package ru.agladkov.questgo.data.features.configuration.sharedprefs
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.agladkov.questgo.R
 import ru.agladkov.questgo.data.features.configuration.UserConfigurationLocalDataSource
 import ru.agladkov.questgo.data.features.configuration.models.UserConfiguration
 import javax.inject.Inject
 
 class SharedPreferencesConfigurationLocalDataSource @Inject constructor(
-    private val context: Context
+    @ApplicationContext val context: Context,
+    private val gson: Gson
 ) : UserConfigurationLocalDataSource {
 
     private val configurationKey = "ConfigurationKey"
-    private val gson = Gson()
 
     private var sharedPreferences: SharedPreferences = context.getSharedPreferences(
         context.getString(

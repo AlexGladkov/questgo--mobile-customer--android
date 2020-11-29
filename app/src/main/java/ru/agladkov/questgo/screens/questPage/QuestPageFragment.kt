@@ -8,13 +8,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.PurchasesUpdatedListener
-import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_quest_page.*
 import kotlinx.android.synthetic.main.fragment_quest_page.itemsView
 import ru.agladkov.questgo.R
@@ -25,23 +25,17 @@ import ru.agladkov.questgo.common.models.ListItem
 import ru.agladkov.questgo.common.viewholders.ButtonCellDelegate
 import ru.agladkov.questgo.common.viewholders.ImageCellDelegate
 import ru.agladkov.questgo.helpers.getNavigationLiveData
-import ru.agladkov.questgo.helpers.injectViewModel
 import ru.agladkov.questgo.screens.fullImage.FullImageFragment.Companion.IMAGE_URL_KEY
 import ru.agladkov.questgo.screens.pay.PayFragment
-import ru.agladkov.questgo.screens.pay.models.PayEvent
-import ru.agladkov.questgo.screens.promo.PromoFragment
 import ru.agladkov.questgo.screens.questPage.models.QuestPageAction
 import ru.agladkov.questgo.screens.questPage.models.QuestPageEvent
 import ru.agladkov.questgo.screens.questPage.models.QuestPageFetchStatus
 import ru.agladkov.questgo.screens.questPage.models.QuestPageViewState
-import ru.agladkov.questgo.screens.thankYouPage.models.ThankYouPageEvent
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class QuestPageFragment : Fragment(R.layout.fragment_quest_page) {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: QuestPageViewModel
+    private val viewModel: QuestPageViewModel by viewModels()
 
     private val purchasesUpdatedListener =
         PurchasesUpdatedListener { billingResult, purchases ->
@@ -59,7 +53,6 @@ class QuestPageFragment : Fragment(R.layout.fragment_quest_page) {
     private val visualComponentsAdapter = VisualComponentsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         visualComponentsAdapter.buttonCellDelegate = object : ButtonCellDelegate {
@@ -77,9 +70,6 @@ class QuestPageFragment : Fragment(R.layout.fragment_quest_page) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = injectViewModel(factory = viewModelFactory)
-
-
         itemsView.adapter = visualComponentsAdapter
         itemsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
@@ -124,7 +114,8 @@ class QuestPageFragment : Fragment(R.layout.fragment_quest_page) {
     private fun setupBillingSystem() {
         activity?.let {
             billingClient = BillingClient.newBuilder(it)
-                .setListener(purchasesUpdatedListener)                .enablePendingPurchases()
+                .setListener(purchasesUpdatedListener)
+                .enablePendingPurchases()
                 .build()
         }
     }

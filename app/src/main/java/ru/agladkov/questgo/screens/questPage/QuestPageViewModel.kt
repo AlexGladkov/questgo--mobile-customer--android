@@ -2,6 +2,7 @@ package ru.agladkov.questgo.screens.questPage
 
 import android.util.Log
 import android.widget.Button
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -37,7 +38,7 @@ sealed class QuestPageError {
     object WrongAnswerException : QuestPageError()
 }
 
-class QuestPageViewModel @Inject constructor(
+class QuestPageViewModel @ViewModelInject constructor(
     private val questApi: QuestApi,
     private val localDataSource: UserConfigurationLocalDataSource,
     private val gson: Gson,

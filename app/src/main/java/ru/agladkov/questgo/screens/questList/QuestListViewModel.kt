@@ -2,6 +2,7 @@ package ru.agladkov.questgo.screens.questList
 
 import android.os.Handler
 import android.os.Looper
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,7 +26,7 @@ import ru.agladkov.questgo.screens.questList.models.QuestListEvent
 import ru.agladkov.questgo.screens.questList.models.QuestListViewState
 import javax.inject.Inject
 
-class QuestListViewModel @Inject constructor(
+class QuestListViewModel @ViewModelInject constructor(
     private val questApi: QuestApi,
     private val userConfigurationLocalDataSource: UserConfigurationLocalDataSource,
     private val analyticsTracker: AnalyticsTracker

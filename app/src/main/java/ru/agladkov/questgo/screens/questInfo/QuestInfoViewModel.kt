@@ -2,6 +2,7 @@ package ru.agladkov.questgo.screens.questInfo
 
 import android.os.Handler
 import android.util.Log
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.*
 import io.reactivex.disposables.CompositeDisposable
@@ -18,7 +19,7 @@ import ru.agladkov.questgo.screens.questInfo.models.QuestInfoViewState
 import ru.agladkov.questgo.screens.questList.adapter.QuestCellModel
 import javax.inject.Inject
 
-class QuestInfoViewModel @Inject constructor(
+class QuestInfoViewModel @ViewModelInject constructor(
     private val localDataSource: UserConfigurationLocalDataSource
 ) : BaseViewModel<QuestInfoViewState, QuestInfoAction, QuestInfoEvent>() {
 

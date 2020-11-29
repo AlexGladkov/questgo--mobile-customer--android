@@ -1,5 +1,6 @@
 package ru.agladkov.questgo.screens.thankYouPage
 
+import androidx.hilt.lifecycle.ViewModelInject
 import ru.agladkov.questgo.base.BaseViewModel
 import ru.agladkov.questgo.common.models.ButtonCellModel
 import ru.agladkov.questgo.common.models.HeaderCellModel
@@ -11,7 +12,7 @@ import ru.agladkov.questgo.screens.thankYouPage.models.ThankYouPageEvent
 import ru.agladkov.questgo.screens.thankYouPage.models.ThankYouPageViewState
 import javax.inject.Inject
 
-class ThankYouPageViewModel @Inject constructor(
+class ThankYouPageViewModel @ViewModelInject constructor(
     private val userConfigurationLocalDataSource: UserConfigurationLocalDataSource
 ) : BaseViewModel<ThankYouPageViewState, ThankYouPageAction, ThankYouPageEvent>() {
 

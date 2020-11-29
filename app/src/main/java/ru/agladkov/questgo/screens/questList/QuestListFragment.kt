@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_quest_list.*
 import ru.agladkov.questgo.R
-import ru.agladkov.questgo.helpers.injectViewModel
 import ru.agladkov.questgo.screens.questInfo.QuestInfoFragment
 import ru.agladkov.questgo.screens.questList.adapter.QuestCellModel
 import ru.agladkov.questgo.screens.questList.adapter.QuestListAdapter
@@ -21,18 +20,15 @@ import ru.agladkov.questgo.screens.questList.models.QuestListEvent
 import ru.agladkov.questgo.screens.questList.models.QuestListViewState
 import ru.agladkov.questgo.screens.questPage.QuestPageFragment.Companion.PAGE_ID
 import ru.agladkov.questgo.screens.questPage.QuestPageFragment.Companion.QUEST_ID
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class QuestListFragment : Fragment(R.layout.fragment_quest_list) {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: QuestListViewModel
+    private val viewModel: QuestListViewModel by viewModels()
 
     private val questListAdapter = QuestListAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         questListAdapter.attachClicks(object : QuestListAdapterClicks {
@@ -44,8 +40,6 @@ class QuestListFragment : Fragment(R.layout.fragment_quest_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = injectViewModel(factory = viewModelFactory)
-
         itemsView.adapter = questListAdapter
         itemsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
