@@ -1,6 +1,7 @@
 package ru.agladkov.questgo.screens.questPage
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,12 +19,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_quest_page.*
 import kotlinx.android.synthetic.main.fragment_quest_page.itemsView
 import ru.agladkov.questgo.R
+import ru.agladkov.questgo.YoutubeActivity
 import ru.agladkov.questgo.common.VisualComponentsAdapter
 import ru.agladkov.questgo.common.models.ButtonCellModel
 import ru.agladkov.questgo.common.models.ImageCellModel
 import ru.agladkov.questgo.common.models.ListItem
+import ru.agladkov.questgo.common.models.VideoCellModel
 import ru.agladkov.questgo.common.viewholders.ButtonCellDelegate
 import ru.agladkov.questgo.common.viewholders.ImageCellDelegate
+import ru.agladkov.questgo.common.viewholders.VideoCellDelegate
 import ru.agladkov.questgo.helpers.getNavigationLiveData
 import ru.agladkov.questgo.screens.fullImage.FullImageFragment.Companion.IMAGE_URL_KEY
 import ru.agladkov.questgo.screens.pay.PayFragment
@@ -64,6 +68,14 @@ class QuestPageFragment : Fragment(R.layout.fragment_quest_page) {
         visualComponentsAdapter.imageCellDelegate = object : ImageCellDelegate {
             override fun onImageClick(model: ImageCellModel) {
                 routeToFullImage(model)
+            }
+        }
+
+        visualComponentsAdapter.videoCellDelegate = object: VideoCellDelegate {
+            override fun onPlayClick(model: VideoCellModel?) {
+                val intent = Intent(context, YoutubeActivity::class.java)
+                intent.putExtra(YoutubeActivity.modelKey, model)
+                startActivity(intent)
             }
         }
     }

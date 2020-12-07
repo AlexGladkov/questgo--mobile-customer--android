@@ -1,5 +1,7 @@
 package ru.agladkov.questgo.screens.questInfo
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -12,15 +14,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_quest_info.*
 import ru.agladkov.questgo.R
+import ru.agladkov.questgo.YoutubeActivity
 import ru.agladkov.questgo.common.VisualComponentsAdapter
 import ru.agladkov.questgo.common.models.ButtonCellModel
+import ru.agladkov.questgo.common.models.LinkModel
+import ru.agladkov.questgo.common.models.VideoCellModel
 import ru.agladkov.questgo.common.viewholders.ButtonCellDelegate
+import ru.agladkov.questgo.common.viewholders.LinkedTextDelegate
+import ru.agladkov.questgo.common.viewholders.VideoCellDelegate
 import ru.agladkov.questgo.screens.questInfo.models.QuestInfoAction
 import ru.agladkov.questgo.screens.questInfo.models.QuestInfoEvent
 import ru.agladkov.questgo.screens.questInfo.models.QuestInfoViewState
 import ru.agladkov.questgo.screens.questList.adapter.QuestCellModel
 import ru.agladkov.questgo.screens.questPage.QuestPageFragment.Companion.PAGE_ID
 import ru.agladkov.questgo.screens.questPage.QuestPageFragment.Companion.QUEST_ID
+
 
 @AndroidEntryPoint
 class QuestInfoFragment : Fragment(R.layout.fragment_quest_info) {
@@ -34,6 +42,21 @@ class QuestInfoFragment : Fragment(R.layout.fragment_quest_info) {
         visualComponentsAdapter.buttonCellDelegate = object : ButtonCellDelegate {
             override fun onButtonClick(model: ButtonCellModel) {
                 viewModel.obtainEvent(QuestInfoEvent.BuyQuest)
+            }
+        }
+
+        visualComponentsAdapter.linkedTextDelegate = object : LinkedTextDelegate {
+            override fun onClick(model: LinkModel) {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(model.url))
+                startActivity(browserIntent)
+            }
+        }
+
+        visualComponentsAdapter.videoCellDelegate = object : VideoCellDelegate {
+            override fun onPlayClick(model: VideoCellModel?) {
+                val intent = Intent(context, YoutubeActivity::class.java)
+                intent.putExtra(YoutubeActivity.modelKey, model)
+                startActivity(intent)
             }
         }
     }

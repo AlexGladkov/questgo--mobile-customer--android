@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
     app:startDestination="@id/questListFragment">
 
     <fragment
         android:id="@+id/questListFragment"
         android:name="ru.agladkov.questgo.screens.questList.QuestListFragment"
-        android:label="QuestListFragment" >
+        android:label="QuestListFragment">
         <action
             android:id="@+id/action_questListFragment_to_questInfoFragment"
             app:destination="@id/questInfoFragment" />
@@ -17,7 +19,7 @@
     <fragment
         android:id="@+id/questInfoFragment"
         android:name="ru.agladkov.questgo.screens.questInfo.QuestInfoFragment"
-        android:label="QuestInfoFragment" >
+        android:label="QuestInfoFragment">
         <action
             android:id="@+id/action_questInfoFragment_to_questPageFragment"
             app:destination="@id/questPageFragment" />
@@ -25,7 +27,7 @@
     <fragment
         android:id="@+id/questPageFragment"
         android:name="ru.agladkov.questgo.screens.questPage.QuestPageFragment"
-        android:label="QuestPageFragment" >
+        android:label="QuestPageFragment">
         <action
             android:id="@+id/action_questPageFragment_self"
             app:destination="@id/questPageFragment" />
@@ -49,7 +51,7 @@
     <dialog
         android:id="@+id/thankYouPageFragment"
         android:name="ru.agladkov.questgo.screens.thankYouPage.ThankYouPageFragment"
-        android:label="ThankYouPageFragment" >
+        android:label="ThankYouPageFragment">
         <action
             android:id="@+id/action_thankYouPageFragment_to_questListFragment"
             app:destination="@id/questListFragment"
@@ -63,7 +65,7 @@
     <dialog
         android:id="@+id/payFragment"
         android:name="ru.agladkov.questgo.screens.pay.PayFragment"
-        android:label="PayFragment" >
+        android:label="PayFragment">
         <action
             android:id="@+id/action_payFragment_to_promoFragment"
             app:destination="@id/promoFragment" />
@@ -72,4 +74,24 @@
         android:id="@+id/promoFragment"
         android:name="ru.agladkov.questgo.screens.promo.PromoFragment"
         android:label="PromoFragment" />
+    <fragment
+        android:id="@+id/FirstFragment"
+        android:name="ru.agladkov.questgo.FirstFragment"
+        tools:layout="@layout/fragment_first"
+        android:label="@string/first_fragment_label">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            app:destination="@id/SecondFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/SecondFragment"
+        android:name="ru.agladkov.questgo.SecondFragment"
+        tools:layout="@layout/fragment_second"
+        android:label="@string/second_fragment_label">
+
+        <action
+            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
 </navigation>

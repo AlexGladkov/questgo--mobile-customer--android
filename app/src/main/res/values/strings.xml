@@ -24,4 +24,16 @@
     <string name="error_pay_canceled">Вы отменили покупку</string>
     <string name="error_pay_code">Встроенные покупки не поддерживаются</string>
     <string name="successfull_bought">Вы успешно оплатили товар</string>
+    <string name="quest_info_privacy_text">Начиная квест, вы принимаете положение о конфиденциальности</string>
+    <string name="quest_info_privacy_link">Положение о конфиденциальности</string>
+    <string name="privacy_policy_link">https://www.notion.so/e629585952fb4888a2ebe605ddc4a579</string>
+    <string name="title_activity_youtube">YoutubeActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

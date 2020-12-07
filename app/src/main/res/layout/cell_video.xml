@@ -6,10 +6,19 @@
     android:paddingTop="16dp"
     android:paddingEnd="16dp">
 
-    <View
+    <FrameLayout
         android:id="@+id/contentVideoView"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:background="@android:color/darker_gray" />
+        android:background="@android:color/black" >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/ic_baseline_play_arrow_24"
+            android:layout_gravity="center"
+            android:tint="@android:color/white" />
+
+    </FrameLayout>
 
 </FrameLayout>
