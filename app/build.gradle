@@ -51,6 +51,9 @@ dependencies {
     implementation 'com.github.Toxa2033:ScaleAndSwipeDismissImageView:v0.7'
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
 
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
+
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:26.1.0')
     implementation 'com.google.firebase:firebase-analytics'

@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.agladkov.questgo.R
+import ru.agladkov.questgo.base.BaseFlowViewModel
 import ru.agladkov.questgo.base.BaseViewModel
 import ru.agladkov.questgo.common.models.*
 import ru.agladkov.questgo.data.features.configuration.UserConfigurationLocalDataSource
@@ -24,7 +25,7 @@ import javax.inject.Inject
 class QuestInfoViewModel @ViewModelInject constructor(
     private val localDataSource: UserConfigurationLocalDataSource,
     @ApplicationContext val context: Context
-) : BaseViewModel<QuestInfoViewState, QuestInfoAction, QuestInfoEvent>() {
+) : BaseFlowViewModel<QuestInfoViewState, QuestInfoAction, QuestInfoEvent>() {
 
     private val compositeDisposable = CompositeDisposable()
     private var questId = -1

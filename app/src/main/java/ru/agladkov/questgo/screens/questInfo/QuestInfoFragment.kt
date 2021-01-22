@@ -9,10 +9,12 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_quest_info.*
+import kotlinx.coroutines.flow.collect
 import ru.agladkov.questgo.R
 import ru.agladkov.questgo.YoutubeActivity
 import ru.agladkov.questgo.common.VisualComponentsAdapter
@@ -66,8 +68,11 @@ class QuestInfoFragment : Fragment(R.layout.fragment_quest_info) {
         itemsView.adapter = visualComponentsAdapter
         itemsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-        viewModel.viewStates().observe(viewLifecycleOwner, Observer { bindViewState(it) })
-        viewModel.viewEffects().observe(viewLifecycleOwner, Observer { bindViewAction(it) })
+        lifecycleScope.launchWhenStarted {
+            viewModel.viewStates().collect { state -> state?.let { bindViewState(it) } }
+            viewModel.viewActions().collect { action -> action?.let { bindViewAction(it) } }
+        }
+
         viewModel.obtainEvent(
             QuestInfoEvent.StartBillingConnection(
                 questCellModel = arguments?.get(QUEST) as? QuestCellModel
