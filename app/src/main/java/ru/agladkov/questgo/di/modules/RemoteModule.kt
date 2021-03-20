@@ -10,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.agladkov.questgo.data.features.quest.list.retrofit.QuestListApi
 import ru.agladkov.questgo.data.features.quest.remote.promo.PromoApi
 import ru.agladkov.questgo.data.features.quest.remote.quest.QuestApi
 import ru.agladkov.questgo.di.qualifiers.DebugRetrofit
@@ -69,4 +70,8 @@ class RemoteModule {
     @Provides
     @Singleton
     fun providePromoApi(@MainRetrofit retrofit: Retrofit): PromoApi = retrofit.create(PromoApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideQuestListApi(@MainRetrofit retrofit: Retrofit): QuestListApi = retrofit.create(QuestListApi::class.java)
 }
