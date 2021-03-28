@@ -3,9 +3,9 @@ package ru.agladkov.questgo.screens.pay
 import android.content.Context
 import android.os.Handler
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,7 +19,8 @@ import ru.agladkov.questgo.screens.pay.models.PayEvent
 import ru.agladkov.questgo.screens.pay.models.PayViewState
 import javax.inject.Inject
 
-class PayViewModel @ViewModelInject constructor(
+@HiltViewModel
+class PayViewModel @Inject constructor(
     @ApplicationContext val context: Context
 ) : BaseViewModel<PayViewState, PayAction, PayEvent>() {
 

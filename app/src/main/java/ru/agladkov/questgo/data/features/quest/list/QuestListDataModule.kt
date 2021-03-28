@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import ru.agladkov.questgo.base.QuestRoomDatabase
 import ru.agladkov.questgo.data.features.quest.list.retrofit.RetrofitQuestListDataSource
 import ru.agladkov.questgo.data.features.quest.list.room.RoomQuestListDataSource
@@ -12,7 +12,7 @@ import ru.agladkov.questgo.data.features.quest.remote.quest.QuestApi
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 class QuestListDataModule {
 
     @Provides

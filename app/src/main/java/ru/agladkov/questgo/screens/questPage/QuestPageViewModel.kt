@@ -2,13 +2,13 @@ package ru.agladkov.questgo.screens.questPage
 
 import android.util.Log
 import android.widget.Button
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.*
 import com.google.gson.Gson
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -38,7 +38,8 @@ sealed class QuestPageError {
     object WrongAnswerException : QuestPageError()
 }
 
-class QuestPageViewModel @ViewModelInject constructor(
+@HiltViewModel
+class QuestPageViewModel @Inject constructor(
     private val questApi: QuestApi,
     private val localDataSource: UserConfigurationLocalDataSource,
     private val gson: Gson,

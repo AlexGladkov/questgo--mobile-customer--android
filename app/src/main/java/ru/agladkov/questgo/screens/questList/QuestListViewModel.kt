@@ -3,10 +3,10 @@ package ru.agladkov.questgo.screens.questList
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -28,7 +28,8 @@ import ru.agladkov.questgo.screens.questList.models.QuestListEvent
 import ru.agladkov.questgo.screens.questList.models.QuestListViewState
 import javax.inject.Inject
 
-class QuestListViewModel @ViewModelInject constructor(
+@HiltViewModel
+class QuestListViewModel @Inject constructor(
     private val questListRepository: QuestListRepository,
     private val userConfigurationLocalDataSource: UserConfigurationLocalDataSource,
     private val analyticsTracker: AnalyticsTracker

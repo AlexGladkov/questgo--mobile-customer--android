@@ -1,8 +1,8 @@
 package ru.agladkov.questgo.screens.promo
 
 import android.content.Context
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.loader.content.Loader
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -16,7 +16,8 @@ import ru.agladkov.questgo.screens.promo.models.PromoEvent
 import ru.agladkov.questgo.screens.promo.models.PromoViewState
 import javax.inject.Inject
 
-class PromoViewModel @ViewModelInject constructor(
+@HiltViewModel
+class PromoViewModel @Inject constructor(
     private val promoApi: PromoApi,
     @ApplicationContext private val context: Context
 ) : BaseViewModel<PromoViewState, PromoAction, PromoEvent>() {
