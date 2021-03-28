@@ -2,6 +2,7 @@ package ru.agladkov.questgo.screens.questList
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +16,7 @@ import ru.agladkov.questgo.analytics.events.PurchaseEvents
 import ru.agladkov.questgo.analytics.events.QuestListEvents
 import ru.agladkov.questgo.base.BaseViewModel
 import ru.agladkov.questgo.data.features.configuration.UserConfigurationLocalDataSource
+import ru.agladkov.questgo.data.features.quest.list.QuestListRepository
 import ru.agladkov.questgo.data.features.quest.remote.quest.QuestApi
 import ru.agladkov.questgo.screens.questInfo.models.QuestInfoAction
 import ru.agladkov.questgo.screens.questInfo.models.QuestInfoEvent
@@ -27,7 +29,7 @@ import ru.agladkov.questgo.screens.questList.models.QuestListViewState
 import javax.inject.Inject
 
 class QuestListViewModel @ViewModelInject constructor(
-    private val questApi: QuestApi,
+    private val questListRepository: QuestListRepository,
     private val userConfigurationLocalDataSource: UserConfigurationLocalDataSource,
     private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<QuestListViewState, QuestListAction, QuestListEvent>() {
@@ -71,7 +73,7 @@ class QuestListViewModel @ViewModelInject constructor(
     private fun fetchQuestList() {
         viewState = QuestListViewState.Loading
         compositeDisposable.add(
-            questApi.getQuestList()
+            questListRepository.fetchQuestList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
